@@ -3,16 +3,17 @@ from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup as bs
 
-
+'''
+for lokal json file 
+variable "game" need uncomment
+'''
 # game: str = input('enter game: ')
-game = 'god of war'
-# game_list: list = []
-def scraperPS(game: str):
-    # countries: list =[
-    # 'us','ca','gb','de','fr','it','es','jp','au','nz','br','mx','kr','hk','tw','sg','my','id','th','ph','in','sa','ae','za','ru','tr','pl','no','se','dk','fi','nl','be','lu','at','ch','pt','gr','ie','hu','cz','sk','bg','ro','hr','si','il','cl','ar','co','pe','uy'
-    #  ]
-    # countries = ['us','ca','gb','de','fr','it','es','jp','au']
-   
+
+def scraperPS(game: str)->list:
+    '''
+    function retern list of objects with 
+    price from all countries realetet PS store
+    '''      
     countries_dict = {
     'us': 'United States', 'ca': 'Canada', 'gb': 'United Kingdom',
       'de': 'Germany', 'fr': 'France', 'it': 'Italy', 'es': 'Spain',
@@ -27,25 +28,34 @@ def scraperPS(game: str):
                         'hr': 'Croatia', 'si': 'Slovenia', 'il': 'Israel', 'cl': 'Chile', 'ar': 'Argentina',
                           'co': 'Colombia', 'pe': 'Peru', 'uy': 'Uruguay'
                           }
+    
     search_game = game.replace(' ','-')
     
-    game_list: list = []
 
     class Game(BaseModel):
         country: str
         title: str
-        prise: str
+        price: str
+        publisher: str
         
+    game_list: list = []
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'\
+                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
+                  'Safari/537.36'}
+
+
     for k, v in countries_dict.items():
         url: str = f'https://www.playstation.com/en-{k}/games/{search_game}/'
-
-        page = requests.get(url=url)
-
+        # print(f'Sraping element: {url}')
+        try:
+          page = requests.get(url=url, headers=headers)
+          page.raise_for_status()
+        except requests.RequestException as e:
+           print(f'Error fetching {v}: {e}')
+           continue
+           
         soupe = bs(page.content, 'html.parser')
-
-        res = soupe.find_all('div', class_="box game-hero__title-content")
-
-        
+        res = soupe.find_all('div', {'class':"box game-hero__title-content"})
 
         for elements in res:
             game_titl = elements.find('h1', class_='game-title')
@@ -53,20 +63,25 @@ def scraperPS(game: str):
                 game_title = game_titl.text.strip()
                 game_pris = elements.find('span', class_='psw-l-line-left psw-l-line-wrap')
                 if game_pris:
-                    game_prise = game_pris.text.strip()
-                    
-                    game_list.append(Game(country=v, title=game_title, prise=game_prise))
+                  game_price = game_pris.text.strip()
+                  publisher_elem = elements.find('div', class_='publisher')
+                  if publisher_elem:
+                    publisher = publisher_elem.text.strip()
+                    game_list.append(Game(country=v, title=game_title, price=game_price, publisher=publisher))
+
     
              
     return game_list
                 
-# if __name__== '__main__':
-#     pass
-'''
-if need lokal json file with game
-'''
-scrap = scraperPS(game)
-scrap_dicts = [game.dict() for game in scrap]
-with open('games_table.json', 'w') as game_fi:
-    json.dump(scrap_dicts, game_fi, indent=4)
-print('Data has bin writen')
+if __name__== '__main__':
+    pass
+# '''
+# if need lokal json file with game
+# uncomment code below
+# '''
+#   scrap = scraperPS(game)
+#   scrap_dicts = [game.dict() for game in scrap]
+
+# with open('games_table.json', 'w') as game_fi:
+#     json.dump(scrap_dicts, game_fi, indent=4)
+# print('Data has bin writen')

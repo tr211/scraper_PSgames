@@ -4,9 +4,6 @@ from pars_countri import scraperPS
 
 app = FastAPI()
 
-# scrap = scraperPS()
-# scrap_dicts = [game.dict() for game in scrap]
-
 @app.get('/show_table/{game_name}')
 def show_table(game_name):
     list_of_games = scraperPS(game_name)
