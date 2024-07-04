@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup as bs
 class Game(BaseModel):
     country: str
     title: str
-    curency: str
+    currency: str
     price: str
     publisher: str
 
@@ -59,7 +59,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
                         publisher_elem = elements.find('div', class_='publisher')
                         if publisher_elem:
                             publisher = publisher_elem.text.strip()
-                            game_list.append(Game(country=v, title=game_title, game_currency=currency, price=price, publisher=publisher))
+                            game_list.append(Game(country=v, title=game_title, currency=currency, price=price, publisher=publisher))
 
     return game_list
 
