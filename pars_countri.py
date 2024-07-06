@@ -63,7 +63,5 @@ def scraperPS(game: str, countries_dict: dict)->list:
 
     return game_list
 
-if __name__=='__main__':
-  pass
  
   
