@@ -4,7 +4,7 @@ import uvicorn
 from pars_countri import json_to_dict ,scraperPS, Game
 
 app = FastAPI()
-pythonfile = 'country.json'
+pythonfile = 'all_lang_countries.json'
 fi = os.path.abspath(pythonfile)
 
 @app.get('/show_table/{game_name}')

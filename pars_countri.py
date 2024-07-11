@@ -33,7 +33,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
                   'Safari/537.36'}
 
     for k, v in countries_dict.items():
-        url: str = f'https://www.playstation.com/en-{k}/games/{search_game}/'
+        url: str = f'https://www.playstation.com/{k}/games/{search_game}/'
         # print(f'Sraping element: {url}')
         try:
           page = requests.get(url=url, headers=headers)
