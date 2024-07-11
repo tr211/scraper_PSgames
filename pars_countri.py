@@ -13,7 +13,7 @@ class Game(BaseModel):
     price: float
     publisher: str
 
-# pythonfile = 'country.json'
+# pythonfile = 'all_lang_countries.json'
 # fi = os.path.abspath(pythonfile)
 # countries_dict = {}
 
@@ -21,6 +21,7 @@ def json_to_dict(fi)-> dict:
    with open(fi, 'r') as countries_dict:
       return json.load(countries_dict)
 
+# game = 'god of war'
 
 def scraperPS(game: str, countries_dict: dict)->list:
     
@@ -68,5 +69,3 @@ def scraperPS(game: str, countries_dict: dict)->list:
 
     return game_list
 
- 
-  
