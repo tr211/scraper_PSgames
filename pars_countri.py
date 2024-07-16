@@ -5,7 +5,6 @@ from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup as bs
 
-# game: str = input('enter game: ')
 class Game(BaseModel):
     country: str
     title: str
@@ -13,15 +12,12 @@ class Game(BaseModel):
     price: float
     publisher: str
 
-# pythonfile = 'all_lang_countries.json'
-# fi = os.path.abspath(pythonfile)
-# countries_dict = {}
 
 def json_to_dict(fi)-> dict:
    with open(fi, 'r') as countries_dict:
       return json.load(countries_dict)
 
-# game = 'god of war'
+
 
 def scraperPS(game: str, countries_dict: dict)->list:
     
@@ -35,7 +31,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
 
     for k, v in countries_dict.items():
         url: str = f'https://www.playstation.com/{k}/games/{search_game}/'
-        # print(f'Sraping element: {url}')
+       
         try:
           page = requests.get(url=url, headers=headers)
           page.raise_for_status()
@@ -55,13 +51,12 @@ def scraperPS(game: str, countries_dict: dict)->list:
                     game_price = game_price_elem.text.strip()
                     match = re.match(r'([\£\$\€])([\d,]+\.?\d*)([a-zA-Z]?)', game_price)
                     if match:
-                        currency = f'{match.group(1)} {match.group(3)}'
+                        currency = f'{match.group(1)}{match.group(3)}'
                         price_str = match.group(2)
                         try:
                             price = price_str.replace(',', '.')
                         except ValueError:
                             print(f"Cannot convert '{price_str}' to float.")
-                        # price = float(price_str)
                         publisher_elem = elements.find('div', class_='publisher')
                         if publisher_elem:
                             publisher = publisher_elem.text.strip()
