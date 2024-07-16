@@ -55,7 +55,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
                     game_price = game_price_elem.text.strip()
                     match = re.match(r'([\£\$\€])([\d,]+\.?\d*)([a-zA-Z]?)', game_price)
                     if match:
-                        currency = f'{match.group(1)} + {match.group(3)}'
+                        currency = f'{match.group(1)} {match.group(3)}'
                         price_str = match.group(2)
                         try:
                             price = price_str.replace(',', '.')
