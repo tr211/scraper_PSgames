@@ -55,10 +55,10 @@ def scraperPS(game: str, countries_dict: dict)->list:
                     game_price = game_price_elem.text.strip()
                     match = re.match(r'([\£\$\€])([\d,]+\.?\d*)([a-zA-Z]?)', game_price)
                     if match:
-                        currency = match.group(1) + match.group(3)
+                        currency = f'{match.group(1)} + {match.group(3)}'
                         price_str = match.group(2)
                         try:
-                            price = float(price_str)
+                            price = price_str.replace(',', '.')
                         except ValueError:
                             print(f"Cannot convert '{price_str}' to float.")
                         # price = float(price_str)
