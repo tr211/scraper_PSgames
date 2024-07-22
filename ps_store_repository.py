@@ -1,5 +1,3 @@
-import os
-import json
 import re
 from pydantic import BaseModel
 import requests
@@ -12,37 +10,27 @@ class Game(BaseModel):
     price: float
     publisher: str
 
-
-def json_to_dict(fi)-> dict:
-   with open(fi, 'r') as countries_dict:
-      return json.load(countries_dict)
-
-
-
-def scraperPS(game: str, countries_dict: dict)->list:
-    
+def find_ps4_prices(game: str, countries_dict: dict)->list:
     search_game = game.replace(' ','-')
-    game_list: list = []
-    # game_price_list: list = []
-    
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'\
-                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
-                  'Safari/537.36'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'\
+        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
+        'Safari/537.36'
+    }
 
-    for k, v in countries_dict.items():
-        url: str = f'https://www.playstation.com/{k}/games/{search_game}/'
-       
+    game_list: list = []
+    for language, counry in countries_dict.items():
+        url: str = f'https://www.playstation.com/{language}/games/{search_game}/'
         try:
           page = requests.get(url=url, headers=headers)
           page.raise_for_status()
-        except requests.RequestException as e:
-           print(f'Error fetching {v}: {e}')
+        except Exception as e:
+           print(f'Error fetching {counry}: {e}')
            continue
            
-        soupe = bs(page.content, 'html.parser')
-        res = soupe.find_all('div', {'class':"box game-hero__title-content"})
-
-        for elements in res:
+        html = bs(page.content, 'html.parser')
+        game_data_box = html.find_all('div', {'class':"box game-hero__title-content"})
+        for elements in game_data_box:
             game_title_elem = elements.find('h1', class_='game-title')
             if game_title_elem:
                 game_title = game_title_elem.text.strip()
@@ -62,9 +50,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
                         publisher_elem = elements.find('div', class_='publisher')
                         if publisher_elem:
                             publisher = publisher_elem.text.strip()
-                            game_list.append(Game(country=v, title=game_title, currency=currency, price=price, publisher=publisher))
+                            game_list.append(Game(country=counry, title=game_title, currency=currency, price=price, publisher=publisher))
 
 
     return game_list
-
-
