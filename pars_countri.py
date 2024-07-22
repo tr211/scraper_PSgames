@@ -49,10 +49,12 @@ def scraperPS(game: str, countries_dict: dict)->list:
                 game_price_elem = elements.find('span', class_='psw-l-line-left psw-l-line-wrap')
                 if game_price_elem:
                     game_price = game_price_elem.text.strip()
-                    match = re.match(r'([\£\$\€])([\d,]+\.?\d*)([a-zA-Z]?)', game_price)
+                    match = re.match(r'([A-Za-z]{1,3}?\$|[\€\$\¥\£\₹\₽\₺\₪\₫\฿\₩]|[A-Za-z]{1,3})?[\s]?([\d,]+\.?\d*|\d+\.\d+)[\s]?([A-Za-z]{1,3})?', game_price)
                     if match:
-                        currency = f'{match.group(1)}{match.group(3)}'
+                        currency = match.group(1) or match.group(3) or ''
                         price_str = match.group(2)
+                        currency = currency.strip() if currency else ''
+
                         try:
                             price = price_str.replace(',', '.')
                         except ValueError:
@@ -62,5 +64,7 @@ def scraperPS(game: str, countries_dict: dict)->list:
                             publisher = publisher_elem.text.strip()
                             game_list.append(Game(country=v, title=game_title, currency=currency, price=price, publisher=publisher))
 
+
     return game_list
+
 
