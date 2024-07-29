@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup as bs
 import requests
 
@@ -26,5 +27,6 @@ def get_all_ps4_games():
         except Exception as e:
             print(f'Error fetching {games_page_url}: {e}')
             continue
-    
+        game_list = re.sub(r'\([^()]*\)', '', game_list)
+
     return game_list
