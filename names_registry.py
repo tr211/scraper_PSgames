@@ -33,4 +33,3 @@ def get_all_ps4_games():
     
     return game_list_clear
 
-print(get_all_ps4_games())
