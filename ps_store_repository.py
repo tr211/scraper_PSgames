@@ -7,12 +7,17 @@ class Game(BaseModel):
     country: str
     title: str
     currency: str
-    price: float
+    price: str
     publisher: str
 
 def find_ps4_prices(game: str, countries_dict: dict)->list:
     game_html_format = game.replace(' ','-')
     search_game = game_html_format.lower()
+    apostrophe = ["'", "®"]
+    for symbol in apostrophe:
+        search_game = search_game.replace(symbol, '')
+    # search_game.replace()
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'\
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
