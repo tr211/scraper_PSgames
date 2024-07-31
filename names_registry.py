@@ -30,6 +30,13 @@ def get_all_ps4_games():
         if isinstance(game_list, list):
             game_list_clear = [re.sub(r'\([^()]*\)', '', name).strip() for name in game_list]
         
-        return game_list_clear
+        game_list_sort = []
+        for a in game_list_clear:
+            if a not in game_list_sort:
+                game_list_sort.append(a)
+                yield a
+        
+        return game_list_sort
     
     return []
+
