@@ -1,3 +1,4 @@
+import re
 from fastapi import FastAPI
 import uvicorn
 import ps_store_repository 
@@ -13,9 +14,11 @@ def country_prices(game_name)->list[ps_store_repository.Game]:
     return list_of_prices
 
 @app.get('/ps4-names')
-def ps4_games_names()->list[str]:
+def ps4_games_names() -> list[str]:
     names_list = names_registry.get_all_ps4_games()
-    return names_list 
-
+    if isinstance(names_list, list):
+        game_list_clear = [re.sub(r'\([^()]*\)', '', name).strip() for name in names_list]
+        return game_list_clear
+    return []
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
