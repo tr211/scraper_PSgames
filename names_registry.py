@@ -27,5 +27,9 @@ def get_all_ps4_games():
         except Exception as e:
             print(f'Error fetching {games_page_url}: {e}')
             continue
+        if isinstance(game_list, list):
+            game_list_clear = [re.sub(r'\([^()]*\)', '', name).strip() for name in game_list]
         
-    return game_list
+        return game_list_clear
+    
+    return []
