@@ -22,12 +22,9 @@ def find_ps4_prices(game: str, countries_dict: dict)->list:
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
         'Safari/537.36'
     }
-    # if  url = f'https://www.playstation.com/en-us/games/{search_game}/': 
-    #         continue
-    # else:
-    #     ...
+ 
     game_list: list = []
-    for language, counry in countries_dict.items():#"en-us"
+    for language, counry in countries_dict.items():
         url: str = f'https://www.playstation.com/{language}/games/{search_game}/'
         try:
           page = requests.get(url=url, headers=headers)
