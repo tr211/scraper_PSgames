@@ -1,22 +1,33 @@
+# from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
 import requests
 from bs4 import BeautifulSoup as bs
 import json
-import pandas as pd
 import os
+
+
 
 def read_countries_languages_file() -> dict:
     file_path = os.path.abspath('ps_countries.json')
     with open(file_path, 'r') as countries_dict:
         return json.load(countries_dict)
 
-countries_dict = read_countries_languages_file()
+# countries_dict = read_countries_languages_file()
 
-def find_ps4_prices(game: str, countries_dict: dict) -> pd.DataFrame:
+def find_ps4_prices(game: str, countries_dict: dict) -> List[dict]:
     game_html_format = game.replace(' ', '-')
     search_game = game_html_format.lower()
     symbols_to_remove = ["'", "®"]
     for symbol in symbols_to_remove:
         search_game = search_game.replace(symbol, '')
+    class GameInfo(BaseModel):
+        image: str
+        name: str
+        platforms: str
+        price: float
+        priceCurrency: str
+        country: str
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
@@ -45,7 +56,6 @@ def find_ps4_prices(game: str, countries_dict: dict) -> pd.DataFrame:
             continue
 
         game_info = json.loads(data_product_info)
-
         # Append the data to the game_source list
         game_source.append({
             'image': game_info.get('image'),
@@ -55,13 +65,9 @@ def find_ps4_prices(game: str, countries_dict: dict) -> pd.DataFrame:
             'priceCurrency': game_info.get('priceCurrency'),
             'country': country
         })
-
-    # Save game_source to a JSON file
-    with open('test_dict.json', 'w') as f:
-        json.dump(game_source, f, indent=4)
-
-    # Convert the list to a DataFrame
-    return pd.DataFrame(game_source)
-
-game_info_df = find_ps4_prices('god of war', countries_dict)
-print(game_info_df)
+        # game_source.append(GameInfo(image=game_info.get('image'), name=game_info.get('name'),platforms=', '.join(game_info.get('platforms', []), price=game_info.get('price'),priceCurrency=game_info.get('priceCurrency'), country=country)))
+        # return game_source
+    
+    return game_source
+# p = find_ps4_prices('god of war', countries_dict)
+# print(p)
