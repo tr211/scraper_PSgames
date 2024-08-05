@@ -55,5 +55,6 @@ def find_ps4_prices(game: str, countries_dict: dict)->list:
                         if publisher_elem:
                             publisher = publisher_elem.text.strip()
                             game_list.append(Game(country=counry, title=game_title, currency=currency, price=price, publisher=publisher))
+                            
 
     return game_list
