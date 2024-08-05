@@ -1,5 +1,4 @@
 {
-    "en-us": "United States",
     "es-ar": "Argentina",
     "en-au": "Australia",
     "de-at": "Austria",
@@ -70,6 +69,7 @@
     "uk-ua": "Ukraine",
     "ar-ae": "United Arab Emirates",
     "en-gb": "United Kingdom",
+    "en-us": "United States",
     "es-uy": "Uruguay",
     "en-vn": "Vietnam"
 }
