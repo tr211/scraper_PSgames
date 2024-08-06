@@ -3,11 +3,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-import time
+import asyncio
 
-def searcher_name_games(game: str) -> list:
-    game_html_format = game.replace(' ', '+')
-    search_game = game_html_format.lower()
+async def searcher_name_games(game: str) -> list:
+    game = game.replace(' ', '+')
+    search_game = game.lower()
     apostrophe = ["'", "®"]
     for symbol in apostrophe:
         search_game = search_game.replace(symbol, '')
@@ -21,7 +21,7 @@ def searcher_name_games(game: str) -> list:
     driver.get(url)
     
     # Wait for the page to load
-    time.sleep(5)
+    await asyncio.sleep(5)
 
     # Extract the game titles
     game_name_list = []
