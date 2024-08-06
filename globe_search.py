@@ -22,7 +22,7 @@ async def searcher_name_games(game: str) -> list:
     
     # Wait for the page to load
     await asyncio.sleep(5)
-
+    
     # Extract the game titles
     game_name_list = []
     try:
@@ -37,4 +37,3 @@ async def searcher_name_games(game: str) -> list:
         driver.quit()
 
     return game_name_list
-
