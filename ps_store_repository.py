@@ -13,12 +13,16 @@ class Game(BaseModel):
 def find_ps4_prices(game: str, countries_dict: dict)->list:
     game_html_format = game.replace(' ','-')
     search_game = game_html_format.lower()
+    apostrophe = ["'", "®"]
+    for symbol in apostrophe:
+        search_game = search_game.replace(symbol, '')
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'\
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0'\
         'Safari/537.36'
     }
-
+ 
     game_list: list = []
     for language, counry in countries_dict.items():
         url: str = f'https://www.playstation.com/{language}/games/{search_game}/'
@@ -50,5 +54,6 @@ def find_ps4_prices(game: str, countries_dict: dict)->list:
                         if publisher_elem:
                             publisher = publisher_elem.text.strip()
                             game_list.append(Game(country=counry, title=game_title, currency=currency, price=price, publisher=publisher))
+
 
     return game_list
