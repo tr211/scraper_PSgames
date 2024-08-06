@@ -1,9 +1,11 @@
+from typing import List
 from fastapi import FastAPI
 import uvicorn
 import ps_store_repository 
 import names_registry
 import file_manager
-import globe_search
+from globe_search import searcher_name_games
+import asyncio
 
 app = FastAPI()
 
@@ -13,9 +15,9 @@ def country_prices(game_name)->list[ps_store_repository.Game]:
     list_of_prices = ps_store_repository.find_ps4_prices(game_name, language_to_country)
     return list_of_prices
 
-@app.get('/general-search/{game_name}')
-def general_searcher(game_name)->list[str]:
-    list_of_game_titles = globe_search.searcher_name_games(game_name)
+@app.get('/general-search/{game_name}', response_model=List[str])
+async def general_searcher(game_name)->list[str]:
+    list_of_game_titles = await searcher_name_games(game_name)
     return list_of_game_titles
 
 @app.get('/ps4-names')
