@@ -1,7 +1,10 @@
+import logging
 import re
 from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup as bs
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class Game(BaseModel):
     country: str
@@ -24,14 +27,23 @@ def find_ps4_prices(game: str, countries_dict: dict)->list:
     }
  
     game_list: list = []
-    for language, counry in countries_dict.items():
-        url: str = f'https://www.playstation.com/{language}/games/{search_game}/'
+    
+    if 'en-us' in countries_dict:
+        us_entry = {'en-us': countries_dict.pop('en-us')}
+        countries_dict = {**us_entry, **countries_dict}
+
+    for language, country in countries_dict.items():
+        url = f'https://www.playstation.com/{language}/games/{search_game}/'
         try:
-          page = requests.get(url=url, headers=headers)
-          page.raise_for_status()
-        except Exception as e:
-           print(f'Error fetching {counry}: {e}')
-           continue
+            page = requests.get(url, headers=headers)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            if country == 'United States':
+                logging.info(f'{search_game} not available in PS Store for {country}')
+                return []
+            else:
+                logging.error(f'Error fetching: {e} for country: {country}')
+            continue
            
         html = bs(page.content, 'html.parser')
         game_data_box = html.find_all('div', {'class':"box game-hero__title-content"})
