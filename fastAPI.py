@@ -7,7 +7,7 @@ import file_manager
 app = FastAPI()
 
 @app.get('/country-prices/{game_name}')
-def country_prices(game_name)->list[ps_store_repository.Game]:
+def country_prices(game_name)->list[ps_store_repository.GameInfo]:
     language_to_country = file_manager.read_countries_languages_file()
     list_of_prices = ps_store_repository.find_ps4_prices(game_name, language_to_country)
     return list_of_prices
