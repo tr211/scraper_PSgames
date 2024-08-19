@@ -24,6 +24,7 @@ def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
     }
 
     game_source = []
+    spetial_price_coyntry = ["Hungary", "India", "Japan", "South Korea"]
 
     for language, country in countries_dict.items():
         url = f'https://www.playstation.com/{language}/games/{search_game}/'
@@ -47,6 +48,11 @@ def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
 
         game_info = json.loads(data_product_info)
         
+        if country in spetial_price_coyntry:
+            price=game_info.get('price')
+            price_str = str(price).replace('.', '')  # Convert price to string and remove dots
+            price = int(price_str)
+
         # Create a GameInfo object and append it to the list
         game_source.append(GameInfo(
             image=game_info.get('image', "No image available"),
@@ -56,5 +62,6 @@ def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
             currency=game_info.get('priceCurrency', "Unknown"),
             country=country
         ))
+        
 
     return game_source
