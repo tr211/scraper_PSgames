@@ -1,3 +1,4 @@
+import re
 from pydantic import BaseModel
 from typing import List, Optional
 import requests
@@ -15,9 +16,8 @@ class GameInfo(BaseModel):
 def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
     game = game.replace(' ', '-')
     search_game = game.lower()
-    symbols_to_remove = ["'", "®"]
-    for symbol in symbols_to_remove:
-        search_game = search_game.replace(symbol, '')
+    for symbol in search_game.split("\n"):
+        search_game = re.sub(r'[^\w\s-]', '', symbol)
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
@@ -47,13 +47,16 @@ def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
             continue
 
         game_info = json.loads(data_product_info)
-        
-        if country in spetial_price_coyntry:
+        if  country == "Serbia":
+            price = 0
+            price_dict = game_info.get('price')
+            price_dict = price
+            print(f"Country: {country}, Price: {price}") # Check price is 0
+        elif country in spetial_price_coyntry:
             price=game_info.get('price')
-            price_str = str(price).replace('.', '')  # Convert price to string and remove dots
+            price_str = str(price).replace('.', '')  
             price = int(price_str)
-
-        # Create a GameInfo object and append it to the list
+        
         game_source.append(GameInfo(
             image=game_info.get('image', "No image available"),
             title=game_info.get('name', "No name available"),
@@ -61,7 +64,7 @@ def find_ps4_prices(game: str, countries_dict: dict) -> List[GameInfo]:
             price=game_info.get('price', 0.0),
             currency=game_info.get('priceCurrency', "Unknown"),
             country=country
-        ))
-        
+            ))
+            
 
     return game_source
